@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: "2026-11-15T00:03:11Z"
+  generation: 1
+  labels:
+    app: tiger
+  name: tiger
+  namespace: page
+  resourceVersion: "72021"
+  uid: d86a2ff9-fb06-484b-8ca5-97e7d337baef
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: tiger
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: tiger
+    spec:
+      containers:
+      - image: registry.access.redhat.com/ubi8/httpd-24
+        imagePullPolicy: Always
+        name: httpd-24
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+          - name: vol
+            mountPath: /usr/share/nginx/html
+            readOnly: true
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes: 
+        - name: vol
+          persistentVolumeClaim:
+            claimName: tiger-pvc
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2026-11-15T00:03:16Z"
+    lastUpdateTime: "2026-11-15T00:03:16Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2026-11-15T00:03:11Z"
+    lastUpdateTime: "2026-11-15T00:03:16Z"
+    message: ReplicaSet "tiger-65f86f99c5" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
